@@ -1,0 +1,10 @@
+[default]
+name=Default
+runtime=host
+config-opts=
+run-opts=
+prefix=/home/jardel/.cache/gnome-builder/install/projeto-1---campo-minado-micaelli/host
+app-id=
+postbuild=
+prebuild=
+default=true
