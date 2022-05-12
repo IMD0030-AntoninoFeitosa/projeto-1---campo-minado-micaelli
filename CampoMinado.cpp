@@ -184,3 +184,87 @@ void CampoMinado::on_clickedClose(int r)
    close();
 }
 
+
+
+void preencher(std::vector<std::vector<int>> & vet, int linhas, int colunas, int bombas){
+
+  unsigned seed =time(0);
+  srand(seed);
+   
+  for (int quantidade=0; quantidade<bombas; 
+    quantidade++){
+      
+		int i= rand() % linhas ; //escolha aleatória da linha 
+   	int j= rand() % colunas; //escolha aleatória da coluna
+      vet[i][j]=-1;  //colocação da bomba 
+	}
+
+for (int i=0; i<linhas;  i++){
+  for (int k=0; k<colunas;  k++){
+    
+    if (vet[i][k]==-1){ //possui bomba (-1)
+             if (i-1>=0){ 
+              if (vet[i-1][k]!=-1)
+                vet[i-1][k]++;
+              
+             }
+          
+            if (i+1<linhas){
+              if (vet[i+1][k]!=-1)
+                vet[i+1][k]++;
+              
+            }
+            if (k-1>=0){
+              if (vet[i][k-1]!=-1)
+                vet[i][k-1]++; }
+      
+            if (k+1 < colunas){
+              if (vet[i][k+1]!=-1)
+                vet[i][k+1]++;
+              
+              }
+
+           if (i-1>= 0 && k-1 >= 0){
+              if (vet[i-1][k-1]!=-1)
+                vet[i-1][k-1]++;
+              
+              }
+
+            if (i-1>= 0 && k+1 < colunas){
+              if (vet[i-1][k+1]!=-1)
+                vet[i-1][k+1]++;
+            }
+
+            if (i+1 < linhas && k-1 >= 0) {
+              if (vet[i+1][k-1]!=-1)
+                vet[i+1][k-1]++;
+            }
+
+            if (i+1 < linhas && k+1 < colunas){
+              if (vet[i+1][k+1]!=-1)
+                vet[i+1][k+1]++;
+              
+            }    
+    }   
+  }
+}
+ //imprimir(vet, linhas, colunas);   
+}
+   
+
+void gerar_mapa(std::vector<std::vector<int>> & vet, int linhas, int colunas, int bomba){ //inicializa o mapa com valores zeros
+  
+  for(int y=0;y<linhas;y++){
+    // vetor que representa uma linha
+    std::vector<int> linha;
+    for(int x=0;x<colunas;x++){
+      linha.push_back(0);
+    }
+    vet.push_back(linha);
+  }
+   
+ 
+ // preencher( vet, linhas, colunas, bomba);
+ 
+}
+
