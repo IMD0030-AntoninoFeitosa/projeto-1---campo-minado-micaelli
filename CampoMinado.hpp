@@ -11,6 +11,7 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/grid.h>
+#include <gtkmm/paned.h>
 #include <gtkmm/radiobutton.h>
 #include <gtkmm/separator.h>
 #include <vector>
@@ -23,6 +24,7 @@ class CampoMinado : public Gtk::Window
     Gtk::RadioButton iniciante, intermediario, avancado;
     Gtk::Grid gridJogo;
     Gtk::Frame frame1,frame2;
+    Gtk::Paned pane;
  
     Gtk::Separator separador;
 
@@ -36,6 +38,7 @@ public:
     
     protected:
         void on_clicked(int positionX,int positionY);
+        void on_clickedAjuda(int a);
         void on_clickedClose(int r);
         void on_iniciarJogo(int dificuldade);
         void on_defineNivel(int dificuldade);

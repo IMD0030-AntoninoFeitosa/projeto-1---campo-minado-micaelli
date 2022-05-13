@@ -8,7 +8,7 @@
 
 CampoMinado::CampoMinado():
 boxGeral(Gtk::ORIENTATION_VERTICAL,0),
- boxSuperior(Gtk::ORIENTATION_HORIZONTAL,0),
+ boxSuperior(Gtk::ORIENTATION_VERTICAL,0),
  boxJogo(Gtk::ORIENTATION_HORIZONTAL,0),
  botaoNovoJogo("Novo Jogo"),
  botaoAjuda("Ajuda"),
@@ -24,16 +24,32 @@ boxGeral(Gtk::ORIENTATION_VERTICAL,0),
   set_title("Campo minado Jardel e Micaelli");
 
   botaoNovoJogo.signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_iniciarJogo), dificuldade));
+  Gtk::Image* iconNovoJogo = new Gtk::Image;
+  iconNovoJogo->set("jogar.png");
+  botaoNovoJogo.set_image(*Gtk::manage(iconNovoJogo));
+  botaoNovoJogo.set_always_show_image(true);
+
+  botaoAjuda.signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clickedAjuda), 0));
+  Gtk::Image* icon = new Gtk::Image;
+  icon->set("lampada.png");
+  botaoAjuda.set_image(*Gtk::manage(icon));
+  botaoAjuda.set_always_show_image(true);
 
   botaoSair.signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clickedClose), 0));
+  Gtk::Image* iconSair = new Gtk::Image;
+  iconSair->set("sair.png");
+  botaoSair.set_image(*Gtk::manage(iconSair));
+  botaoSair.set_always_show_image(true);
+
 
   iniciante.signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_defineNivel), 0));
   intermediario.signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_defineNivel), 1));
   avancado.signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_defineNivel), 2));
 
-/*
 
-  add(fixed);
+ 
+  add(pane);
+  pane.add1(fixed);
   fixed.add(frame1);
   fixed.move(frame1,0,0);
 
@@ -58,24 +74,13 @@ boxGeral(Gtk::ORIENTATION_VERTICAL,0),
   
   frame1.add(boxSuperior);
 
- 
 
 
-  for(int i=0;i<10;i++){
-		for(int j=0;j<10;j++){
-			Gtk::Button* pButton = new Gtk::Button("",true);
-      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
-		  gridJogo.attach(*pButton,i,j,1,1);
-		}
-		
-	}
+ pane.add2(gridJogo);
 
   
-
-    */
-on_iniciarJogo(1);
   
-  add(gridJogo);
+
 
   gridJogo.set_column_homogeneous(true);
 
@@ -98,27 +103,72 @@ void CampoMinado::on_clicked(int positionX,int positionY)
 void CampoMinado::on_iniciarJogo(int dif)
 {
 
- switch (dif)
+ switch (dificuldade)
  {
+
+
+
  case 0:
+    for(int i=10;i>0;i--){
+     gridJogo.remove_row(i);	
+	}
+
+   if(iniciante.get_active()){
+
   for(int i=0;i<10;i++){
 		for(int j=0;j<10;j++){
 			Gtk::Button* pButton = new Gtk::Button("",false);
       (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
 		  Gtk::Image* icon = new Gtk::Image;
-       icon->set("bamba.png");
+       icon->set("trevo.png");
+      (*pButton).set_image(*Gtk::manage(icon));
+      (*pButton).set_always_show_image(false);
+      (*pButton).set_use_underline(true);
+      gridJogo.attach(*pButton,i,j,1,1);
+		}		
+	}
+
+   }else if(intermediario.get_active()){
+    for(int i=0;i<15;i++){
+		for(int j=0;j<15;j++){
+			Gtk::Button* pButton = new Gtk::Button("",false);
+      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
+		  Gtk::Image* icon = new Gtk::Image;
+       icon->set("trevo.png");
       (*pButton).set_image(*Gtk::manage(icon));
       (*pButton).set_always_show_image(false);
       gridJogo.attach(*pButton,i,j,1,1);
-		}
-		
+		}		
 	}
+   }else{
+
+  for(int i=0;i<15;i++){
+		for(int j=0;j<30;j++){
+			Gtk::Button* pButton = new Gtk::Button("",false);
+      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
+		  Gtk::Image* icon = new Gtk::Image;
+       icon->set("trevo.png");
+      (*pButton).set_image(*Gtk::manage(icon));
+      (*pButton).set_always_show_image(false);
+      gridJogo.attach(*pButton,i,j,1,1);
+		}		
+	}
+
+   }
+
+  
    break;
 
    case 1:
 
-  for(int i=0;i<15;i++){
-		for(int j=0;j<15;j++){
+    for(int i=15;i>0;i--){
+     gridJogo.remove_row(i);	
+	}
+
+   if(iniciante.get_active()){
+
+  for(int i=0;i<10;i++){
+		for(int j=0;j<10;j++){
 			Gtk::Button* pButton = new Gtk::Button("",false);
       (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
 		  Gtk::Image* icon = new Gtk::Image;
@@ -129,11 +179,21 @@ void CampoMinado::on_iniciarJogo(int dif)
 		}		
 	}
 
-   break;
+   }else if(intermediario.get_active()){
+    for(int i=0;i<15;i++){
+		for(int j=0;j<15;j++){
+			Gtk::Button* pButton = new Gtk::Button("",false);
+      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
+		  Gtk::Image* icon = new Gtk::Image;
+       icon->set("bamba.png");
+      (*pButton).set_image(*Gtk::manage(icon));
+      (*pButton).set_always_show_image(false);
+      gridJogo.attach(*pButton,i,j,1,1);
+		}		
+	}
+   }else{
 
-   case 2:
-
-     for(int i=0;i<15;i++){
+  for(int i=0;i<15;i++){
 		for(int j=0;j<30;j++){
 			Gtk::Button* pButton = new Gtk::Button("",false);
       (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
@@ -145,9 +205,18 @@ void CampoMinado::on_iniciarJogo(int dif)
 		}		
 	}
 
+   }
+
    break;
- 
- default:
+
+   case 2:
+
+
+    for(int i=15;i>0;i--){
+     gridJogo.remove_row(i);	
+	}
+
+   if(iniciante.get_active()){
 
   for(int i=0;i<10;i++){
 		for(int j=0;j<10;j++){
@@ -158,13 +227,47 @@ void CampoMinado::on_iniciarJogo(int dif)
       (*pButton).set_image(*Gtk::manage(icon));
       (*pButton).set_always_show_image(false);
       gridJogo.attach(*pButton,i,j,1,1);
-		}
-		
+		}		
 	}
+
+   }else if(intermediario.get_active()){
+    for(int i=0;i<15;i++){
+		for(int j=0;j<15;j++){
+			Gtk::Button* pButton = new Gtk::Button("",false);
+      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
+		  Gtk::Image* icon = new Gtk::Image;
+       icon->set("bamba.png");
+      (*pButton).set_image(*Gtk::manage(icon));
+      (*pButton).set_always_show_image(false);
+      gridJogo.attach(*pButton,i,j,1,1);
+		}		
+	}
+   }else{
+
+  for(int i=0;i<15;i++){
+		for(int j=0;j<30;j++){
+			Gtk::Button* pButton = new Gtk::Button("",false);
+      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
+		  Gtk::Image* icon = new Gtk::Image;
+       icon->set("bamba.png");
+      (*pButton).set_image(*Gtk::manage(icon));
+      (*pButton).set_always_show_image(false);
+      gridJogo.attach(*pButton,i,j,1,1);
+		}		
+	}
+
+   }
+
+   break;
+ 
+ default:
+
 
 
    break;
  }
+
+ show_all_children();
 
 
 }
@@ -172,11 +275,17 @@ void CampoMinado::on_iniciarJogo(int dif)
 
 void CampoMinado::on_defineNivel(int dif)
 {
-dificuldade=dif;
-  on_iniciarJogo(dificuldade);
+//dificuldade=dif;
 }
 
+void CampoMinado::on_clickedAjuda(int a)
+{
 
+Gtk::MessageDialog dialog(*this, "Informações sobre o jojo");
+  dialog.set_secondary_text(" O jogo consiste em uma área matricial de n linhas por m colunas com um total de n * m células e k minas. Inicialmente, as células estão ocultas, ou seja, não é possível determinar se ela possui uma mina ou não, e o objetivo do jogo é revelar todas as células que não possuem minas. Assim, uma célula pode ser revelada por uma ação do usuário ou por uma das regras do jogo e isso pode resultar em uma das três situações possíveis:\n\n1 - Uma mina é revelada:\n Nesse caso, o jogo encerra com a derrota do usuário; \n\n2 - Um número é revelado: \n O valor indica a quantidade de minas adjacentes, isto é, a quantidade de minas nas 8 células vizinhas; \n\n3 - Uma posição vazia é revelada:\n nesse caso, o jogo revela automaticamente todas as células adjacentes a essa posição, visto que ela não possui minas adjacentes.\n\n  O usuário vence o jogo ao revelar todas as células que não contêm minas. Além disso, o usuário pode marcar uma célula não revelada com uma bandeira caso ele acredite que não existe uma mina nessa posição. Logo, o usuário pode aplicar a ação revelar sobre um número desde que a quantidade de bandeiras adjacentes seja igual ao seu número. Assim, todas as células adjacentes, que não estão marcadas por bandeiras, são reveladas automaticamente. Observe, que isso ocorrerá mesmo que as bandeiras estejam posicionadas incorretamente e assim revelando uma mina.Por fim, a dificuldade do jogo irá determinar as dimensões da área do jogo, a quantidade de minas e se a primeira ação revelar sempre será um número ou sempre será uma posição vazia.");
+  dialog.run();
+  
+}
 
 
 void CampoMinado::on_clickedClose(int r)
