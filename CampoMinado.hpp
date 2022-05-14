@@ -25,10 +25,10 @@ class CampoMinado : public Gtk::Window
     Gtk::Grid gridJogo;
     Gtk::Frame frame1,frame2;
     Gtk::Paned pane;
- 
     Gtk::Separator separador;
+    int dificuldade,qtdARevelar;
 
-    int dificuldade;
+    std::vector<std::vector<int>> vetor;
     
 
 
@@ -42,6 +42,8 @@ public:
         void on_clickedClose(int r);
         void on_iniciarJogo(int dificuldade);
         void on_defineNivel(int dificuldade);
+        void preencher(std::vector<std::vector<int>> & vet, int linhas, int colunas, int bombas);
+        void gerar_mapa(std::vector<std::vector<int>> & vet, int linhas, int colunas, int bomba);
 
     
 };

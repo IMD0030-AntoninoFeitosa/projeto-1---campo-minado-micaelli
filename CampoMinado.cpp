@@ -4,6 +4,8 @@
 #include <gtkmm/widget.h>
 #include <math.h>
 #include <gtkmm/image.h>
+#include <vector>
+#include<algorithm>
 
 
 CampoMinado::CampoMinado():
@@ -16,7 +18,8 @@ boxGeral(Gtk::ORIENTATION_VERTICAL,0),
  iniciante("Iniciante"),
  intermediario("Intermediário"),
  avancado("Avançado"),
- dificuldade(0)
+ dificuldade(0),
+ qtdARevelar(0)
   {
 
 
@@ -94,178 +97,169 @@ boxGeral(Gtk::ORIENTATION_VERTICAL,0),
 
 void CampoMinado::on_clicked(int positionX,int positionY)
 {
-  Gtk::Widget* pWidget =  gridJogo.get_child_at(positionX,positionY);
-  Gtk::Button* pBt = dynamic_cast<Gtk::Button*>(pWidget); 
-  (*pBt).set_always_show_image(true);
+  
+  Gtk::Widget* pWidgetSelecionado =  gridJogo.get_child_at(positionX,positionY);
+  Gtk::Button* pBtSelecionado = dynamic_cast<Gtk::Button*>(pWidgetSelecionado); 
+  if(!(*pBtSelecionado).get_always_show_image()){
+
+
+     // se a celula selecionada for bomba
+      if(vetor[positionX][positionY]==-1){
+
+          for(int i=0;i<vetor.size();i++){
+              std::vector<int> linha = vetor[i];
+              for(int j=0;j<linha.size();j++){
+                Gtk::Widget* pWidget =  gridJogo.get_child_at(i,j);
+                Gtk::Button* pBt = dynamic_cast<Gtk::Button*>(pWidget); 
+                (*pBt).set_always_show_image(true);
+          	}	
+         }
+
+        // aqui apresenta o fim do jogo
+        Gtk::MessageDialog dialogFimDoJogo(*this, "Fim do jogo!");
+        dialogFimDoJogo.set_secondary_text("Para jogar novamento clique no botão \"NovoJogo\"");
+        dialogFimDoJogo.run();
+         
+      }else{
+        (*pBtSelecionado).set_always_show_image(true);
+            
+            qtdARevelar--;
+
+           if(qtdARevelar==0){
+
+                for(int i=0;i<vetor.size();i++){
+                    std::vector<int> linha = vetor[i];
+                    for(int j=0;j<linha.size();j++){
+                      Gtk::Widget* pWidget =  gridJogo.get_child_at(i,j);
+                      Gtk::Button* pBt = dynamic_cast<Gtk::Button*>(pWidget); 
+
+                      (*pBt).set_always_show_image(true);
+
+
+                  }	
+              }
+
+              // aqui apresenta o fim do jogo
+              Gtk::MessageDialog dialogFimDoJogo(*this, "Parabéns!");
+              dialogFimDoJogo.set_secondary_text("Você ganhou o jogo!");
+              dialogFimDoJogo.run();
+
+           }
+
+          
+
+      
+      }
+      
+
+  }
+   
 
 }
 
 void CampoMinado::on_iniciarJogo(int dif)
 {
+  
+  qtdARevelar=0;
+
+ if(avancado.get_active()){
+   dificuldade=2;
+ }else if(intermediario.get_active()){
+   dificuldade=1;
+ }else{
+   dificuldade=0;
+ }
+
+ for(int i=vetor.size();i>0;i--){
+        gridJogo.remove_row(i);	
+	 }
+
+ vetor.erase (vetor.begin(),vetor.end());
 
  switch (dificuldade)
  {
 
-
-
  case 0:
-    for(int i=10;i>0;i--){
-     gridJogo.remove_row(i);	
-	}
+    gerar_mapa(vetor,10,10,10);
 
-   if(iniciante.get_active()){
-
-  for(int i=0;i<10;i++){
-		for(int j=0;j<10;j++){
-			Gtk::Button* pButton = new Gtk::Button("",false);
-      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
-		  Gtk::Image* icon = new Gtk::Image;
-       icon->set("trevo.png");
-      (*pButton).set_image(*Gtk::manage(icon));
-      (*pButton).set_always_show_image(false);
-      (*pButton).set_use_underline(true);
-      gridJogo.attach(*pButton,i,j,1,1);
-		}		
-	}
-
-   }else if(intermediario.get_active()){
-    for(int i=0;i<15;i++){
-		for(int j=0;j<15;j++){
-			Gtk::Button* pButton = new Gtk::Button("",false);
-      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
-		  Gtk::Image* icon = new Gtk::Image;
-       icon->set("trevo.png");
-      (*pButton).set_image(*Gtk::manage(icon));
-      (*pButton).set_always_show_image(false);
-      gridJogo.attach(*pButton,i,j,1,1);
-		}		
-	}
-   }else{
-
-  for(int i=0;i<15;i++){
-		for(int j=0;j<30;j++){
-			Gtk::Button* pButton = new Gtk::Button("",false);
-      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
-		  Gtk::Image* icon = new Gtk::Image;
-       icon->set("trevo.png");
-      (*pButton).set_image(*Gtk::manage(icon));
-      (*pButton).set_always_show_image(false);
-      gridJogo.attach(*pButton,i,j,1,1);
-		}		
-	}
-
-   }
-
-  
    break;
-
+     
    case 1:
-
-    for(int i=15;i>0;i--){
-     gridJogo.remove_row(i);	
-	}
-
-   if(iniciante.get_active()){
-
-  for(int i=0;i<10;i++){
-		for(int j=0;j<10;j++){
-			Gtk::Button* pButton = new Gtk::Button("",false);
-      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
-		  Gtk::Image* icon = new Gtk::Image;
-       icon->set("bamba.png");
-      (*pButton).set_image(*Gtk::manage(icon));
-      (*pButton).set_always_show_image(false);
-      gridJogo.attach(*pButton,i,j,1,1);
-		}		
-	}
-
-   }else if(intermediario.get_active()){
-    for(int i=0;i<15;i++){
-		for(int j=0;j<15;j++){
-			Gtk::Button* pButton = new Gtk::Button("",false);
-      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
-		  Gtk::Image* icon = new Gtk::Image;
-       icon->set("bamba.png");
-      (*pButton).set_image(*Gtk::manage(icon));
-      (*pButton).set_always_show_image(false);
-      gridJogo.attach(*pButton,i,j,1,1);
-		}		
-	}
-   }else{
-
-  for(int i=0;i<15;i++){
-		for(int j=0;j<30;j++){
-			Gtk::Button* pButton = new Gtk::Button("",false);
-      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
-		  Gtk::Image* icon = new Gtk::Image;
-       icon->set("bamba.png");
-      (*pButton).set_image(*Gtk::manage(icon));
-      (*pButton).set_always_show_image(false);
-      gridJogo.attach(*pButton,i,j,1,1);
-		}		
-	}
-
-   }
-
+     gerar_mapa(vetor,15,15,40);
    break;
 
    case 2:
-
-
-    for(int i=15;i>0;i--){
-     gridJogo.remove_row(i);	
-	}
-
-   if(iniciante.get_active()){
-
-  for(int i=0;i<10;i++){
-		for(int j=0;j<10;j++){
-			Gtk::Button* pButton = new Gtk::Button("",false);
-      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
-		  Gtk::Image* icon = new Gtk::Image;
-       icon->set("bamba.png");
-      (*pButton).set_image(*Gtk::manage(icon));
-      (*pButton).set_always_show_image(false);
-      gridJogo.attach(*pButton,i,j,1,1);
-		}		
-	}
-
-   }else if(intermediario.get_active()){
-    for(int i=0;i<15;i++){
-		for(int j=0;j<15;j++){
-			Gtk::Button* pButton = new Gtk::Button("",false);
-      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
-		  Gtk::Image* icon = new Gtk::Image;
-       icon->set("bamba.png");
-      (*pButton).set_image(*Gtk::manage(icon));
-      (*pButton).set_always_show_image(false);
-      gridJogo.attach(*pButton,i,j,1,1);
-		}		
-	}
-   }else{
-
-  for(int i=0;i<15;i++){
-		for(int j=0;j<30;j++){
-			Gtk::Button* pButton = new Gtk::Button("",false);
-      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
-		  Gtk::Image* icon = new Gtk::Image;
-       icon->set("bamba.png");
-      (*pButton).set_image(*Gtk::manage(icon));
-      (*pButton).set_always_show_image(false);
-      gridJogo.attach(*pButton,i,j,1,1);
-		}		
-	}
-
-   }
-
+      gerar_mapa(vetor,15,30,100);
    break;
  
  default:
 
-
+    gerar_mapa(vetor,10,10,10);
 
    break;
+
  }
+
+
+  for(int i=0;i<vetor.size();i++){
+    std::vector<int> linha = vetor[i];
+		for(int j=0;j<linha.size();j++){
+			Gtk::Button* pButton = new Gtk::Button("",false);
+      (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
+		  Gtk::Image* icon = new Gtk::Image;
+      
+      switch (linha[j])
+      {
+      case -1:
+        icon->set("bomba.png");
+        // marcar bombas para testar vitoria
+        (*pButton).set_label("b");
+        break;
+       case 0:
+        icon->set("trevo.png");
+        qtdARevelar++;
+        break;
+       case 1:
+       icon->set("1.png");
+        break; 
+        case 2:
+        icon->set("2.png");
+        break;
+        case 3:
+        icon->set("3.png");
+        break;
+        case 4:
+        icon->set("4.png");
+        break;
+        case 5:
+        icon->set("5.png");
+        break;
+        case 6:
+        icon->set("6.png");
+        break;
+        case 7:
+        icon->set("7.png");
+        break;
+        case 8:
+        icon->set("8.png");
+        break;
+      default:
+
+        break;
+      }
+      
+       
+      (*pButton).set_image(*Gtk::manage(icon));
+      // revelar ou nao para testes
+      (*pButton).set_always_show_image(false);
+      gridJogo.attach(*pButton,i,j,1,1);
+		}		
+	}
+
+
+
+
+ 
 
  show_all_children();
 
@@ -275,7 +269,7 @@ void CampoMinado::on_iniciarJogo(int dif)
 
 void CampoMinado::on_defineNivel(int dif)
 {
-//dificuldade=dif;
+  //dificuldade=dif;
 }
 
 void CampoMinado::on_clickedAjuda(int a)
@@ -295,13 +289,12 @@ void CampoMinado::on_clickedClose(int r)
 
 
 
-void preencher(std::vector<std::vector<int>> & vet, int linhas, int colunas, int bombas){
+void CampoMinado::preencher(std::vector<std::vector<int>> & vet, int linhas, int colunas, int bombas){
 
   unsigned seed =time(0);
   srand(seed);
    
-  for (int quantidade=0; quantidade<bombas; 
-    quantidade++){
+  for (int quantidade=0; quantidade<bombas; quantidade++){
       
 		int i= rand() % linhas ; //escolha aleatória da linha 
    	int j= rand() % colunas; //escolha aleatória da coluna
@@ -361,7 +354,7 @@ for (int i=0; i<linhas;  i++){
 }
    
 
-void gerar_mapa(std::vector<std::vector<int>> & vet, int linhas, int colunas, int bomba){ //inicializa o mapa com valores zeros
+void CampoMinado::gerar_mapa(std::vector<std::vector<int>> & vet, int linhas, int colunas, int bomba){ //inicializa o mapa com valores zeros
   
   for(int y=0;y<linhas;y++){
     // vetor que representa uma linha
@@ -373,7 +366,7 @@ void gerar_mapa(std::vector<std::vector<int>> & vet, int linhas, int colunas, in
   }
    
  
- // preencher( vet, linhas, colunas, bomba);
+  preencher( vet, linhas, colunas, bomba);
  
 }
 
