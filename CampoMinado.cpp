@@ -6,7 +6,8 @@
 #include <gtkmm/image.h>
 #include <vector>
 #include<algorithm>
-
+#include <chrono>
+#include <string.h>
 
 CampoMinado::CampoMinado():
 boxGeral(Gtk::ORIENTATION_VERTICAL,0),
@@ -23,9 +24,12 @@ boxGeral(Gtk::ORIENTATION_VERTICAL,0),
   {
 
 
+// inicia os elementos da biblioteca GTKmm para a contrução da janela
+
   set_default_size(1024,768);
   set_title("Campo minado Jardel e Micaelli");
 
+  // inicializa os botoes e faz a ligação do sinal do click para as respectivas funçoes passando os argumentos
   botaoNovoJogo.signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_iniciarJogo), dificuldade));
   Gtk::Image* iconNovoJogo = new Gtk::Image;
   iconNovoJogo->set("jogar.png");
@@ -95,6 +99,7 @@ boxGeral(Gtk::ORIENTATION_VERTICAL,0),
 
 }
 
+// função do click do botão do grid
 void CampoMinado::on_clicked(int positionX,int positionY)
 {
   
@@ -115,9 +120,11 @@ void CampoMinado::on_clicked(int positionX,int positionY)
           	}	
          }
 
+         fim = std::chrono::system_clock::now();
+         calcularTempo();
         // aqui apresenta o fim do jogo
         Gtk::MessageDialog dialogFimDoJogo(*this, "Fim do jogo!");
-        dialogFimDoJogo.set_secondary_text("Para jogar novamento clique no botão \"NovoJogo\"");
+        dialogFimDoJogo.set_secondary_text("Para jogar novamento clique no botão \"NovoJogo\"\n\nO seu tempo foi: "+std::to_string(duracao.count())+" segundos");
         dialogFimDoJogo.run();
          
       }else{
@@ -151,12 +158,7 @@ void CampoMinado::on_clicked(int positionX,int positionY)
 
         }
 
-              
-
-            
-
-
-
+         // aqui verifica se ainda tem celula a ser revelada para determinar o fim do jogo caso haja vencedor
            if(qtdARevelar==0){
 
                 for(int i=0;i<vetor.size();i++){
@@ -171,9 +173,11 @@ void CampoMinado::on_clicked(int positionX,int positionY)
                   }	
               }
 
+              fim = std::chrono::system_clock::now();
+              calcularTempo();
               // aqui apresenta o fim do jogo
               Gtk::MessageDialog dialogFimDoJogo(*this, "Parabéns!");
-              dialogFimDoJogo.set_secondary_text("Você ganhou o jogo!");
+              dialogFimDoJogo.set_secondary_text("Você ganhou o jogo!\n\nO seu tempo foi: "+std::to_string(duracao.count())+" segundos");
               dialogFimDoJogo.run();
 
            }
@@ -189,11 +193,16 @@ void CampoMinado::on_clicked(int positionX,int positionY)
 
 }
 
+
+// função que inicia o jogo
 void CampoMinado::on_iniciarJogo(int dif)
 {
   
   qtdARevelar=0;
+  inicio = std::chrono::system_clock::now();
 
+
+// pega qual nivel está selecionado
  if(avancado.get_active()){
    dificuldade=2;
  }else if(intermediario.get_active()){
@@ -217,7 +226,7 @@ void CampoMinado::on_iniciarJogo(int dif)
   }
  
 
-
+// aqui chama a função de iniciar a matrix de acordo com o nivel de dificuldade selecionado
  switch (dificuldade)
  {
 
@@ -244,6 +253,8 @@ void CampoMinado::on_iniciarJogo(int dif)
  }
 
 
+// aqui preenche o grid da interface grafica colocando um botão dentro de cada celula do grid espelando a matrix do vetor
+// cada botão é adicionado em tempo de execução e é definido a função que vai ser chamada no evendo click e a sua posição como argumendo 
   for(int i=0;i<vetor.size();i++){
     std::vector<int> linha = vetor[i];
 		for(int j=0;j<linha.size();j++){
@@ -251,6 +262,7 @@ void CampoMinado::on_iniciarJogo(int dif)
       (*pButton).signal_clicked().connect(sigc::bind(sigc::mem_fun(*this,&CampoMinado::on_clicked), i,j));
 		  Gtk::Image* icon = new Gtk::Image;
       
+      // aqui coloca as imagens nos botoes
       switch (linha[j])
       {
       case -1:
@@ -301,8 +313,9 @@ void CampoMinado::on_iniciarJogo(int dif)
       
        
       (*pButton).set_image(*Gtk::manage(icon));
-      // revelar ou nao para testes
+      // revelar ou nao a imagem do botao
       (*pButton).set_always_show_image(false);
+      // adiciona o botao no grid
       gridJogo.attach(*pButton,i,j,1,1);
 		}		
 	}
@@ -323,6 +336,7 @@ void CampoMinado::on_defineNivel(int dif)
   //dificuldade=dif;
 }
 
+// funcão chamada pelo botão de ajuda e que exibe uma janela com as regras do jogo.
 void CampoMinado::on_clickedAjuda(int a)
 {
 
@@ -333,13 +347,14 @@ Gtk::MessageDialog dialog(*this, "Informações sobre o jojo");
 }
 
 
+// função chamada pelo botao sair e que finaliza a aplicação
 void CampoMinado::on_clickedClose(int r)
 {
    close();
 }
 
 
-
+// função que preenche o mapa do vetor e que coloca as bombas para depois ser exibido no grid do componente grafico
 void CampoMinado::preencher(std::vector<std::vector<int>> & vet, int linhas, int colunas, int bombas){
 
   unsigned seed =time(0);
@@ -401,10 +416,11 @@ for (int i=0; i<linhas;  i++){
     }   
   }
 }
- //imprimir(vet, linhas, colunas);   
+
 }
    
 
+// inicializa a matrix (vector) com o tamanho passado como parametros
 void CampoMinado::gerar_mapa(std::vector<std::vector<int>> & vet, int linhas, int colunas, int bomba){ //inicializa o mapa com valores zeros
   
   for(int y=0;y<linhas;y++){
@@ -421,6 +437,16 @@ void CampoMinado::gerar_mapa(std::vector<std::vector<int>> & vet, int linhas, in
  
 }
 
+
+// função que calcula o tempo decorrido do jogo em segundos
+// essa função é chamada no fim do jogo utilizando as variaveis de tempo atribuidas no inicio e no fim do jogo
+void CampoMinado::calcularTempo() {
+  duracao = fim - inicio;
+}
+
+
+
+/*
 bool record_cmp(Record &a, Record &b) {
   return a.milliseconds < b.milliseconds;
 }
@@ -438,3 +464,4 @@ void sort122(std::vector<Record> &records) {
     records[k] = tmp;
   }
 }
+*/

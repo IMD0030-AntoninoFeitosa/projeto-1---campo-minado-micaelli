@@ -15,6 +15,7 @@
 #include <gtkmm/radiobutton.h>
 #include <gtkmm/separator.h>
 #include <vector>
+#include <chrono>
 
 class CampoMinado : public Gtk::Window
 {
@@ -27,6 +28,9 @@ class CampoMinado : public Gtk::Window
     Gtk::Paned pane;
     Gtk::Separator separador;
     int dificuldade,qtdARevelar;
+    std::chrono::time_point<std::chrono::system_clock> inicio, fim;
+    std::chrono::duration<double> duracao;
+    
 
     std::vector<std::vector<int>> vetor;
     
@@ -44,6 +48,7 @@ public:
         void on_defineNivel(int dificuldade);
         void preencher(std::vector<std::vector<int>> & vet, int linhas, int colunas, int bombas);
         void gerar_mapa(std::vector<std::vector<int>> & vet, int linhas, int colunas, int bomba);
+        void calcularTempo();
 
     
 };
