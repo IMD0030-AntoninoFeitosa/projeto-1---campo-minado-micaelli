@@ -73,4 +73,7 @@ As seguintes perguntas podem ser respondidas para guiar o desenvolvimento do sis
 5. Como as informações serão representadas no programa?
 6. Como as informações são transformadas, manipuladas e exibidas ao longo do programa?
 ![fotoTela](https://user-images.githubusercontent.com/50933125/168455094-6e648e05-2b42-4990-a581-0c494f651346.png)
+Implementação feita com a biblioteca GTKmm como alternativa para exibição grafica
+site oficial da biblioteca: https://www.gtkmm.org/en/download.html
+comando para compilação: g++  mainCampoMinado.cpp -o mainCampoMinado `pkg-config --cflags --libs gtkmm-3.0`
 
