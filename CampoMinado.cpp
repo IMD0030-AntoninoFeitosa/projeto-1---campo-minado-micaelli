@@ -125,6 +125,38 @@ void CampoMinado::on_clicked(int positionX,int positionY)
             
             qtdARevelar--;
 
+            std::vector<int> li = vetor[positionX];
+
+
+            for(int x=positionX-1;x<positionX+2;x++){
+              for(int y=positionY-1;y<positionY+2;y++){
+                if(x>=0 && x<vetor.size() && y>=0 && y<li.size()){
+                       if(vetor[x][y]!=-1){
+                    Gtk::Widget* pWidget =  gridJogo.get_child_at(x,y);
+                    Gtk::Button* pBt = dynamic_cast<Gtk::Button*>(pWidget); 
+                    if(!(*pBt).get_always_show_image()){
+                        qtdARevelar--;
+                        (*pBt).set_always_show_image(true);
+                    }
+                    
+
+                  }
+
+
+                }
+
+
+              }
+
+
+        }
+
+              
+
+            
+
+
+
            if(qtdARevelar==0){
 
                 for(int i=0;i<vetor.size();i++){
@@ -170,11 +202,21 @@ void CampoMinado::on_iniciarJogo(int dif)
    dificuldade=0;
  }
 
- for(int i=vetor.size();i>0;i--){
-        gridJogo.remove_row(i);	
-	 }
+// apaga todas as linhas do grid de acordo com o vetor
 
- vetor.erase (vetor.begin(),vetor.end());
+
+    for(int i=10;i>0;i--){
+        gridJogo.remove_row(i-1);	
+        
+	    }
+
+
+  // apaga todos os elementos do vetor 
+  if(vetor.size()>0){
+    vetor.clear();
+  }
+ 
+
 
  switch (dificuldade)
  {
@@ -185,6 +227,7 @@ void CampoMinado::on_iniciarJogo(int dif)
    break;
      
    case 1:
+
      gerar_mapa(vetor,15,15,40);
    break;
 
@@ -213,35 +256,43 @@ void CampoMinado::on_iniciarJogo(int dif)
       case -1:
         icon->set("bomba.png");
         // marcar bombas para testar vitoria
-        (*pButton).set_label("b");
+      //  (*pButton).set_label("b");
         break;
        case 0:
-        icon->set("trevo.png");
-        qtdARevelar++;
+            icon->set("trevo.png");
+            qtdARevelar++;
         break;
        case 1:
-       icon->set("1.png");
+          icon->set("1.png");
+          qtdARevelar++;
         break; 
         case 2:
-        icon->set("2.png");
+          icon->set("2.png");
+          qtdARevelar++;
         break;
         case 3:
-        icon->set("3.png");
+          icon->set("3.png");
+          qtdARevelar++;
         break;
         case 4:
-        icon->set("4.png");
+          icon->set("4.png");
+          qtdARevelar++;
         break;
         case 5:
-        icon->set("5.png");
+          icon->set("5.png");
+          qtdARevelar++;
         break;
         case 6:
-        icon->set("6.png");
+          icon->set("6.png");
+          qtdARevelar++;
         break;
         case 7:
-        icon->set("7.png");
+          icon->set("7.png");
+          qtdARevelar++;
         break;
         case 8:
-        icon->set("8.png");
+          icon->set("8.png");
+          qtdARevelar++;
         break;
       default:
 
