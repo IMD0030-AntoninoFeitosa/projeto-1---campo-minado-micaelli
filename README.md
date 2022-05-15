@@ -6,9 +6,9 @@ Projeto para disciplina de Linguagem de Programação 1 IMD0030 2022.1
 
 O trabalho é em dupla (não pode ser individual) e pode ser submetido via SIGAA (arquivo compactado com todo o código-fonte) ou via GitHub Classroom.
 
-Integrante 1: Nome Matrícula:
+Integrante 1: PAULO JARDEL MENDES DA FONSECA 20190135107
 
-Integrante 2: Nome Matrícula:
+Integrante 2: MICAELLI DE SALES SANTOS 20190044791
 
 ## O Jogo
 
