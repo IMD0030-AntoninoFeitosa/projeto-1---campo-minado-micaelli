@@ -72,4 +72,5 @@ As seguintes perguntas podem ser respondidas para guiar o desenvolvimento do sis
 4. Exite alguma relação entre as informações, isto é, elas podem ser agrupadas representando um mesmo conceito?
 5. Como as informações serão representadas no programa?
 6. Como as informações são transformadas, manipuladas e exibidas ao longo do programa?
+![fotoTela](https://user-images.githubusercontent.com/50933125/168455094-6e648e05-2b42-4990-a581-0c494f651346.png)
 
