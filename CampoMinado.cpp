@@ -421,3 +421,20 @@ void CampoMinado::gerar_mapa(std::vector<std::vector<int>> & vet, int linhas, in
  
 }
 
+bool record_cmp(Record &a, Record &b) {
+  return a.milliseconds < b.milliseconds;
+}
+
+void sort122(std::vector<Record> &records) {
+  for(int k=0;k<records.size();k++){
+    int pos = 0;
+    for(int i=k+1;i<records.size();i++){
+      if(record_cmp(records[i], records[pos])){
+        pos = i;
+      }
+    }
+    Record tmp = records[pos];
+    records[pos] = records[k];
+    records[k] = tmp;
+  }
+}
